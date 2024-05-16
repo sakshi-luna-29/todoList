@@ -94,8 +94,8 @@
                                 @endif
                             </td>
                             <td>
-                                <button class="btn btn-danger" onclick="updateTask({{$todo->id}})">Edit</button>
-
+                                <!-- <button class="btn btn-danger" onclick="updateTask({{$todo->id}})">Edit</button> -->
+                                <input type="checkbox" id="task_status" onclick="updateTask({{$todo->id}})">
                                 <button class="btn btn-danger" onclick="deleteTask({{$todo->id}})">Delete</button>
 
                             </td>
@@ -196,17 +196,24 @@
     });
 
     function updateTask(taskId) {
+        var task_status = $('#task_status').val();
+        console.log("task_status " + task_status);
         $.ajax({
             url: '/tasks/' + taskId,
             type: 'patch',
+            data: {
+                task_status: task_status,
+
+            },
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
 
             success: function(response) {
                 console.log(response);
-                // $('#task_' + taskId).remove();
+                $('#task_' + taskId).remove();
                 alert(response.message);
+
             },
             error: function(xhr) {
                 // Handle error

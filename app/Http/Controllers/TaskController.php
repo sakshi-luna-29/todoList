@@ -10,7 +10,7 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $todos = Task::all();
+        $todos = Task::where('is_completed', 0)->get();
         return view('taskList', compact('todos'));
     }
     public function show()
@@ -41,7 +41,21 @@ class TaskController extends Controller
             return response()->json(['message' => 'something went wrong , please try again']);
         }
     }
+    public function update(Request $request, $id)
+    {
+        if ($request->get('task_status') == 'on') {
+            $is_complete = 1;
+        } else {
+            $is_complete = 0;
+        }
 
+        $update =  Task::where('id', $id)->update(['is_completed' => $is_complete]);
+        if ($is_complete) {
+            return response()->json(['message' => 'Task  updated Already', 'status' => 'true']);
+        } else {
+            return response()->json(['message' => 'something went wrong , please try again', 'status' => 'false']);
+        }
+    }
     public function destroy($id)
     {
         $dd =  Task::where('id', $id)->delete();
